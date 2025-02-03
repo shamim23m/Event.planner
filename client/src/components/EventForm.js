@@ -1,84 +1,63 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 
-function EventForm({ addEvent, editEvent }) {
-  const [eventName, setEventName] = useState('');
-  const [eventDescription, setEventDescription] = useState('');
-  const [eventDate, setEventDate] = useState('');
-  const [eventId, setEventId] = useState(null);
 
-  useEffect(() => {
-    if (eventId) {
-      // If editing, fill in existing event details
-      const event = JSON.parse(localStorage.getItem(eventId));
-      setEventName(event.name);
-      setEventDescription(event.description);
-      setEventDate(event.date);
-    }
-  }, [eventId]);
+function EventForm() {
+  const [eventDetails, setEventDetails] = useState({
+    name: '',
+    description: '',
+    date: '',
+    user_id: 1, // Assuming user_id is 1 for now
+  });
+
+  const handleChange = (e) => {
+    setEventDetails({
+      ...eventDetails,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!eventName || !eventDescription || !eventDate) {
-      alert('Please fill out all fields.');
-      return;
-    }
-
-    const newEvent = {
-      id: eventId || Date.now().toString(),
-      name: eventName,
-      description: eventDescription,
-      date: eventDate,
-    };
-
-    if (eventId) {
-      editEvent(eventId, newEvent);
-    } else {
-      addEvent(newEvent);
-    }
-
-    clearForm();
-  };
-
-  const clearForm = () => {
-    setEventName('');
-    setEventDescription('');
-    setEventDate('');
-    setEventId(null);
+    axios.post('http://localhost:5000/api/events', eventDetails)
+      .then(response => {
+        console.log('Event created:', response.data);
+      })
+      .catch(error => {
+        console.log('Error creating event:', error);
+      });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="hidden" id="event-id" value={eventId || ''} />
-      <label htmlFor="event-name">Event Name:</label>
-      <input
-        type="text"
-        id="event-name"
-        value={eventName}
-        onChange={(e) => setEventName(e.target.value)}
-        required
-      />
-
-      <label htmlFor="event-description">Description:</label>
-      <textarea
-        id="event-description"
-        value={eventDescription}
-        onChange={(e) => setEventDescription(e.target.value)}
-        required
-      ></textarea>
-
-      <label htmlFor="event-date">Event Date:</label>
-      <input
-        type="text"
-        id="event-date"
-        value={eventDate}
-        onChange={(e) => setEventDate(e.target.value)}
-        required
-        placeholder="YYYY-MM-DD"
-      />
-
-      <button type="submit">Save Event</button>
-    </form>
+    <div className="event-form">
+      <h2>Create Event</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="name"
+          value={eventDetails.name}
+          onChange={handleChange}
+          placeholder="Event Name"
+          required
+        />
+        <textarea
+          name="description"
+          value={eventDetails.description}
+          onChange={handleChange}
+          placeholder="Event Description"
+          required
+        />
+        <input
+          type="datetime-local"
+          name="date"
+          value={eventDetails.date}
+          onChange={handleChange}
+          required
+        />
+        <button type="submit">Create Event</button>
+      </form>
+    </div>
   );
 }
 

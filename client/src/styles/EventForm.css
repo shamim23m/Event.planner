@@ -1,0 +1,28 @@
+.event-form {
+    padding: 20px;
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #f1f1f1;
+    border-radius: 8px;
+  }
+  
+  .event-form input,
+  .event-form textarea,
+  .event-form button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .event-form button {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .event-form button:hover {
+    background-color: #45a049;
+  }
+  

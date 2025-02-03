@@ -1,23 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import ProductCard from './ProductCard';
+import './EventList.css';
 
-function EventList({ events, editEvent }) {
-  const handleEdit = (event) => {
-    editEvent(event.id, event); // You can also open the form to edit here
-  };
+
+function EventList() {
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/events')
+      .then(response => setEvents(response.data))
+      .catch(error => console.log('Error fetching events:', error));
+  }, []);
 
   return (
-    <ul>
-      {events.map((event) => (
-        <li key={event.id}>
-          <div>
-            <h3>{event.name}</h3>
-            <p>{event.description}</p>
-            <p>{event.date}</p>
-          </div>
-          <button onClick={() => handleEdit(event)}>Edit</button>
-        </li>
-      ))}
-    </ul>
+    <div className="event-list">
+      <h2>Upcoming Events</h2>
+      <div className="event-cards">
+        {events.map(event => (
+          <ProductCard key={event.id} event={event} />
+        ))}
+      </div>
+    </div>
   );
 }
 

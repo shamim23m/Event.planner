@@ -1,0 +1,21 @@
+.product-card {
+    width: 250px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .product-card h3 {
+    margin-bottom: 10px;
+  }
+  
+  .product-card p {
+    font-size: 14px;
+  }
+  
+  .product-card p strong {
+    font-weight: bold;
+  }
+  
