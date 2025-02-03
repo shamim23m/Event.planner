@@ -1,28 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import ProductCard from './ProductCard';
-import './EventList.css';
+import React, { useEffect, useState } from 'react';
+import api from './axios';
 
-
-function EventList() {
+const EventList = () => {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/events')
+    api.get('/events')
       .then(response => setEvents(response.data))
-      .catch(error => console.log('Error fetching events:', error));
+      .catch(error => console.error('Error fetching events:', error));
   }, []);
 
   return (
-    <div className="event-list">
-      <h2>Upcoming Events</h2>
-      <div className="event-cards">
+    <div>
+      <h2>Event List</h2>
+      <ul>
         {events.map(event => (
-          <ProductCard key={event.id} event={event} />
+          <li key={event.id}>
+            {event.name} - {event.date}
+            <p>{event.description}</p>
+            <p>Organizer: {event.organizer}</p>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
-}
+};
 
 export default EventList;
