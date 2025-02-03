@@ -1,12 +1,9 @@
-# models.py
-
-from datetime import datetime
-from config import db
+from app import db  # Import db from app.py to use the initialized db object
 
 # User model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    username = db.Column(db.String(50), nullable=False, unique=True)
     events = db.relationship('Event', backref='organizer', lazy=True)
     reservations = db.relationship('Reservation', backref='user', lazy=True)
 
@@ -16,21 +13,23 @@ class User(db.Model):
 # Event model
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), nullable=False)
-    description = db.Column(db.String(500))
-    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(500), nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    reservations = db.relationship('Reservation', backref='event', lazy=True)
+    organizer = db.relationship('User', backref=db.backref('events', lazy=True))
 
     def __repr__(self):
         return f"<Event {self.name}>"
 
-# Reservation model (many-to-many relationship between User and Event)
+# Reservation model
 class Reservation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
     reserved_seats = db.Column(db.Integer, nullable=False)
+    user = db.relationship('User', backref=db.backref('reservations', lazy=True))
+    event = db.relationship('Event', backref=db.backref('reservations', lazy=True))
 
     def __repr__(self):
         return f"<Reservation {self.user_id} - {self.event_id}>"
